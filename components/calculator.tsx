@@ -1550,8 +1550,8 @@ const SalaryCalculator = () => {
 
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('work_stress_level')} (1–10)
-                <span className="ml-1 text-xs text-gray-500">({t('higher_less_worth')})</span>
+                {t('work_stress_level')} 
+                {/* <span className="ml-1 text-xs text-gray-500">({t('higher_less_worth')})</span> */}
               </label>
               
               <div className="flex items-center gap-4">
