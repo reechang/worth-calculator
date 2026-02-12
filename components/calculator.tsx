@@ -443,7 +443,7 @@ const SalaryCalculator = () => {
 
   const [showPPPInput, setShowPPPInput] = useState(false);
   // 修改为国家代码，默认为中国
-  const [selectedCountry, setSelectedCountry] = useState<string>('CN');
+  const [selectedCountry, setSelectedCountry] = useState<string>('DE');
   
   // 初始化时从localStorage加载国家设置
   useEffect(() => {
