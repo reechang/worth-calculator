@@ -659,6 +659,14 @@ const translations: Record<Language, Record<string, string>> = {
     'canteen_average': '食堂一般',
     'canteen_good': '食堂不错',
     'canteen_excellent': '食堂超赞',
+
+    //stresslevel
+    "work_stress_level": "工作压力等级",
+    "higher_less_worth": "越高 → 工作价值越低",
+    "very_low": "极低",
+    "very_high": "极高",
+    "stress_impact": "压力影响",
+    "penalty": "减益",
     
     // 教育和工作经验
     'education_level': '个人学历水平',
@@ -897,7 +905,15 @@ const translations: Record<Language, Record<string, string>> = {
     'canteen_average': 'Average Quality',
     'canteen_good': 'Good Quality',
     'canteen_excellent': 'Excellent Quality',
-    
+
+    //stress level
+    "work_stress_level": "Work Stress Level",
+    "higher_less_worth": "higher = lower job worth",
+    "very_low": "Very low",
+    "very_high": "Very high / burnout",
+    "stress_impact": "Stress penalty",
+    "penalty": "penalty",
+
     // Education and work experience
     'education_level': 'Education Level',
     'degree_type': 'Degree Type',

@@ -339,6 +339,7 @@ interface HistoryItem {
   bachelorType: string;
   hasShuttle: boolean;
   hasCanteen: boolean;
+  workStressLevel: string;
 }
 
 // 定义表单数据接口
@@ -368,6 +369,7 @@ interface FormData {
   education: string;
   hasShuttle: boolean;
   hasCanteen: boolean;
+  workStressLevel: string;
 }
 
 // 定义计算结果接口
@@ -436,6 +438,7 @@ const SalaryCalculator = () => {
     education: '1.0',
     hasShuttle: false,         // 确保这是一个明确的布尔值
     hasCanteen: false,         // 确保这是一个明确的布尔值
+    workStressLevel: '5',          // neutral starting point
   });
 
   const [showPPPInput, setShowPPPInput] = useState(false);
@@ -514,6 +517,7 @@ const SalaryCalculator = () => {
             // 确保 hasShuttle 和 hasCanteen 有合法的布尔值，即使历史记录中没有这些字段
             hasShuttle: typeof item.hasShuttle === 'boolean' ? item.hasShuttle : false,
             hasCanteen: typeof item.hasCanteen === 'boolean' ? item.hasCanteen : false,
+            workStressLevel: item.workStressLevel || formData.workStressLevel,
           }));
           
           setHistory(normalizedHistory);
@@ -652,6 +656,12 @@ const SalaryCalculator = () => {
     }, 0);
   }, []);
 
+  const calculateStressPenalty = useCallback(() => {
+    //                → level 1 = 1.0   (no penalty)
+    //                → level 10 = 0.60 (40% penalty)
+    return 1 - (Number(formData.workStressLevel) - 1) / 9 * 0.40;
+  }, [formData.workStressLevel]);
+
   const calculateValue = () => {
     if (!formData.salary) return 0;
     
@@ -741,10 +751,12 @@ const SalaryCalculator = () => {
     // 根据公式: 1 + (对应幅度-1) * 工作单位系数，计算最终薪资倍数
     experienceSalaryMultiplier = 1 + (baseSalaryMultiplier - 1) * salaryGrowthFactor;
     }
+
+    const stressPenalty = calculateStressPenalty();
     
     // 薪资满意度应该受到经验薪资倍数的影响
     // 相同薪资，对于高经验者来说价值更低，对应的计算公式需要考虑经验倍数
-    return (dailySalary * environmentFactor) / 
+    return (dailySalary * environmentFactor * stressPenalty) / 
            (35 * (workHours + effectiveCommuteHours - 0.5 * restTime) * Number(formData.education) * experienceSalaryMultiplier);
   };
 
@@ -915,6 +927,7 @@ const SalaryCalculator = () => {
       bachelorType: formData.bachelorType,
       hasShuttle: formData.hasShuttle,
       hasCanteen: formData.hasCanteen,
+      workStressLevel: formData.workStressLevel,
     };
     
     try {
@@ -1534,6 +1547,33 @@ const SalaryCalculator = () => {
                 { label: t('team_excellent'), value: '1.2' },
               ]}
             />
+
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t('work_stress_level')} (1–10)
+                <span className="ml-1 text-xs text-gray-500">({t('higher_less_worth')})</span>
+              </label>
+              
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={formData.workStressLevel}
+                  onChange={(e) => handleInputChange('workStressLevel', e.target.value)}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-blue-500"
+                />
+                <span className="text-lg font-semibold min-w-[3ch] text-center text-gray-800 dark:text-gray-200">
+                  {formData.workStressLevel}
+                </span>
+              </div>
+              
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 px-1">
+                <span>1 {t('very_low')}</span>
+                <span>10 {t('very_high')}</span>
+              </div>
+            </div>
 
             {/* 班车和食堂选项作为加分项，加上勾选框控制 */}
             <div className="space-y-2">
